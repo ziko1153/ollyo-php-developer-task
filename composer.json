@@ -1,0 +1,16 @@
+{
+    "name": "ollyo/php-task",
+    "description": "This is a simple php task for the candidates",
+    "autoload": {
+        "psr-4": {
+            "Ollyo\\Task\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Ollyo",
+            "email": "hello@ollyo.com"
+        }
+    ],
+    "require": {}
+}
