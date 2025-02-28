@@ -1,16 +1,19 @@
 {
-    "name": "ollyo/php-task",
-    "description": "This is a simple php task for the candidates",
-    "autoload": {
-        "psr-4": {
-            "Ollyo\\Task\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Ollyo",
-            "email": "hello@ollyo.com"
-        }
-    ],
-    "require": {}
+  "name": "ollyo/php-task",
+  "description": "This is a simple php task for the candidates",
+  "autoload": {
+    "psr-4": {
+      "Ollyo\\Task\\": "src/",
+      "Config\\": "config/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Ollyo",
+      "email": "hello@ollyo.com"
+    }
+  ],
+  "require": {
+    "paypal/rest-api-sdk-php": "^1.14"
+  }
 }

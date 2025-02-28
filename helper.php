@@ -1,5 +1,17 @@
 <?php
 
+use Config\Env;
+use Config\View;
+
+Env::load(__DIR__ . '/.env');
+
+if (!function_exists('env')) {
+    function env($key, $default = null)
+    {
+        return Env::get($key, $default);
+    }
+}
+
 if (!function_exists('baseUrl')) {
     /**
      * Gets the base URL of the application.
@@ -49,8 +61,7 @@ if (!function_exists('view')) {
      * @return string The rendered view content as a string
      */
     function view(string $name, array $data) {
-        // @todo: Complete the view function so that we could render a view with data.
-        // e.g. view('checkout', $data);
+        View::render($name, $data);
     }
 }
 
@@ -75,5 +86,15 @@ if (!function_exists('redirect')) {
 
         header('Location: ' . $redirectUrl);
         exit;
+    }
+
+    if (!function_exists('dd')) {
+        function dd($data)
+        {
+            echo '<pre>';
+            var_dump($data);
+            echo '</pre>';
+            die();
+        }
     }
 }

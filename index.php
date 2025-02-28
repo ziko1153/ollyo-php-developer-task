@@ -1,13 +1,16 @@
 <?php
 
+use Ollyo\Task\Controllers\CheckoutController;
 use Ollyo\Task\Routes;
+use Ollyo\Task\Controllers\PaymentController;
+use Ollyo\Task\Controllers\WebhookController;
 
+session_start();
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/helper.php';
 
 define('BASE_PATH', dirname(__FILE__));
 define('BASE_URL', baseUrl());
-
 $products = [
     [
         'name' => 'Minimalist Leather Backpack',
@@ -40,32 +43,52 @@ $data = [
     'products' => $products,
     'shipping_cost' => $shippingCost,
     'address' => [
-        'name' => 'Sherlock Holmes',
+        'name' => '',
         'email' => 'sherlock@example.com',
         'address' => '221B Baker Street, London, England',
-        'city' => 'London',
+        'city' => '',
         'post_code' => 'NW16XE',
     ]
 ];
 
 Routes::get('/', function () {
-    return view('app', []);
+    return view('home', []);
 });
 
 Routes::get('/checkout', function () use ($data) {
     return view('checkout', $data);
 });
 
-Routes::post('/checkout', function ($request) {
-    // @todo: Implement PayPal payment gateway integration here
-    // 1. Initialize PayPal API client with credentials
-    // 2. Create payment with order details from $data
-    // 3. Execute payment and handle response
-    // 4. If payment successful, save order and redirect to thank you page
-    // 5. If payment fails, redirect to error payment page with message
+Routes::post('/checkout', function ($request) use ($products, $shippingCost) {
+    CheckoutController::checkout($request, $products, $shippingCost);
+});
 
-    // Consider creating a dedicated controller class to handle payment processing
-    // This helps separate payment logic from routing and keeps code organized
+Routes::get('/payment/success', function ($request) {
+    PaymentController::success($request);
+});
+
+Routes::get('/payment/cancel', function ($request) {
+    PaymentController::canceled($request);
+});
+
+Routes::get('/payment/error', function ($request) {
+    PaymentController::failed($request);
+});
+
+Routes::post('/paypal/webhook', function ($request) {
+    $headers = getallheaders();
+    $payload = file_get_contents('php://input');
+
+    $controller = new WebhookController();
+    if (!$controller->handleWebhook($headers, $payload)) {
+        http_response_code(500);
+        echo 'Webhook handling failed';
+        exit;
+    }
+
+    http_response_code(200);
+    echo 'Webhook processed successfully';
+    exit;
 });
 
 // Register thank you & payment failed routes with corresponding views here.
