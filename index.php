@@ -1,9 +1,10 @@
 <?php
 
-use Ollyo\Task\Controllers\CheckoutController;
 use Ollyo\Task\Routes;
 use Ollyo\Task\Controllers\PaymentController;
 use Ollyo\Task\Controllers\WebhookController;
+use Ollyo\Task\Controllers\CheckoutController;
+use Ollyo\Task\Controllers\SubscriptionController;
 
 session_start();
 require_once __DIR__ . '/vendor/autoload.php';
@@ -61,6 +62,19 @@ Routes::get('/checkout', function () use ($data) {
 
 Routes::post('/checkout', function ($request) use ($products, $shippingCost) {
     CheckoutController::checkout($request, $products, $shippingCost);
+});
+
+Routes::get('/subscription/plans', function () {
+    SubscriptionController::showPlans();
+});
+
+Routes::post('/subscription/create', function ($request) {
+
+    SubscriptionController::createSubscription($request['plan']);
+});
+
+Routes::get('/subscription/success', function ($request) {
+    SubscriptionController::handleSuccess($request);
 });
 
 Routes::get('/payment/success', function ($request) {
